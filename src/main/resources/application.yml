@@ -1,0 +1,15 @@
+spring:
+  apprication:
+    name: parish
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://138.2.113.127:3306/parish_info
+    username: manager
+    password: alsrn8746!
+
+logging:
+  level:
+    root: info
+    com.psc: debug
