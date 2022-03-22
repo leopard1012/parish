@@ -13,17 +13,38 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping(value = "/v1")
 public class UserController {
     private final UserService userService;
 
-    @RequestMapping(value = "/v1/users", method = RequestMethod.GET, consumes = "application/json")
+    @GetMapping(value = "/users")
     public List<User> getUserList() {
         return userService.getUserList();
     }
 
-    @RequestMapping(value = "/v1/user", method = RequestMethod.PUT, consumes = "application/json")
+    @PutMapping(value = "/user")
     @Transactional
     public Long createUser(@RequestBody UserParam userParam) {
         return userService.createUser(userParam);
+    }
+
+    @PatchMapping(value = "/user/{userId}/check-leader")
+    @Transactional
+    public Boolean checkLeader(
+            @PathVariable Long userId,
+            @RequestParam Boolean parishLeader,
+            @RequestParam Boolean areaLeader,
+            @RequestParam Boolean pastoralLeader
+    ) {
+        return userService.checkLeader(userId, parishLeader, areaLeader, pastoralLeader);
+    }
+
+    @PostMapping(value = "/user/{userId}")
+    @Transactional
+    public Boolean updateUser(
+            @PathVariable Long userId,
+            @RequestBody UserParam userParam
+    ) {
+        return userService.updateUser(userId, userParam);
     }
 }

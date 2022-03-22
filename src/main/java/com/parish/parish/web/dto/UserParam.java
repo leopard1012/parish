@@ -10,5 +10,8 @@ import lombok.Setter;
 public class UserParam {
     private String userId;
     private String userName;
-    private String affiliatedParish;
+    private String userNameSeparator;
+    private Integer parishCode;
+    private Integer areaCode;
+    private Long pastoralCode;
 }

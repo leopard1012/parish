@@ -1,23 +1,49 @@
 package com.parish.parish.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Builder
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
     @Column
     private String userName;
 
     @Column
-    private String affiliatedParish;
+    private String userNameSeparator;
+
+    @Column
+    private Integer parishCode;
+
+    @Column
+    private Integer areaCode;
+
+    @Column
+    private Long pastoralCode;
+
+    @Column(columnDefinition = "boolean default false")
+    @Builder.Default
+    private Boolean parishLeader = false;
+
+    @Column(columnDefinition = "boolean default false")
+    @Builder.Default
+    private Boolean areaLeader = false;
+
+    @Column(columnDefinition = "boolean default false")
+    @Builder.Default
+    private Boolean pastoralLeader = false;
+
+    @Column(columnDefinition = "boolean default false")
+    @Builder.Default
+    private Boolean deleteYn = false;
 }
