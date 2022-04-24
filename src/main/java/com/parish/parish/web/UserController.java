@@ -4,8 +4,6 @@ import com.parish.parish.domain.User;
 import com.parish.parish.service.UserService;
 import com.parish.parish.web.dto.UserParam;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.query.Procedure;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;

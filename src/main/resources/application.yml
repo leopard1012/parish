@@ -5,7 +5,7 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-    url: jdbc:mysql://138.2.113.127:3306/parish_info
+    url: jdbc:mysql://146.56.115.236:3306/parish_info
     username: manager
     password: alsrn8746!
 

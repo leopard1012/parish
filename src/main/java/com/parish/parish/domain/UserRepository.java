@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
@@ -13,4 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "update user set area_code = :areaCode where pastoral_code = :pastoralCode",
             nativeQuery = true)
     void updateUserAreaCode(@Param("areaCode") Integer areaCode, @Param("pastoralCode") Long pastoralCode);
+
+    Optional<User> findByUserNameAndUserNameSeparator(String userName, String userNameSeparator);
 }
