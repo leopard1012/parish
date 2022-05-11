@@ -7,6 +7,8 @@ import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public interface ServiceAttendanceRepository extends JpaRepository<ServiceAttendance, Long> {
@@ -14,7 +16,7 @@ public interface ServiceAttendanceRepository extends JpaRepository<ServiceAttend
 
     Optional<ServiceAttendance> findByServiceDateAndServiceTypeAndUserId(LocalDate serviceDate, String serviceType, Long userId);
 
-
+    List<ServiceAttendance> findByUserIdIn(Collection<Long> userIds);
 
 //    @Transactional
 //    @Modifying(clearAutomatically = true)

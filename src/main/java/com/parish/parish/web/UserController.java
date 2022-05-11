@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@CrossOrigin(origins="*", allowedHeaders = "*")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/v1")

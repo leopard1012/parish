@@ -5,6 +5,7 @@ import com.parish.parish.domain.ServiceAttendance;
 import com.parish.parish.domain.ServiceAttendanceRepository;
 import com.parish.parish.domain.User;
 import com.parish.parish.domain.UserRepository;
+import com.parish.parish.web.dto.ServiceAttendancePerPastoral;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -123,5 +124,16 @@ public class ServiceAttendanceService {
 
         log.info("result : " + resultMap);
         return 1L;
+    }
+
+    public List<ServiceAttendancePerPastoral> getServiceAttendancePerPastoral(Long pastoralCode) {
+        List<User> users = userRepository.findByPastoralCode(pastoralCode);
+        List<Long> pastoralUsers = new ArrayList<>();
+
+        for (User user : users) {
+            pastoralUsers.add(user.getUserId());
+        }
+
+
     }
 }
