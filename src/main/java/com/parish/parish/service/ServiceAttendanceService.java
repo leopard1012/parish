@@ -8,6 +8,7 @@ import com.parish.parish.domain.UserRepository;
 import com.parish.parish.web.dto.ServiceAttendancePerPastoral;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -126,7 +127,7 @@ public class ServiceAttendanceService {
         return 1L;
     }
 
-    public List<ServiceAttendancePerPastoral> getServiceAttendancePerPastoral(Long pastoralCode) {
+    public List<ServiceAttendance> getServiceAttendancePerPastoral(Long pastoralCode) {
         List<User> users = userRepository.findByPastoralCode(pastoralCode);
         List<Long> pastoralUsers = new ArrayList<>();
 
@@ -134,6 +135,7 @@ public class ServiceAttendanceService {
             pastoralUsers.add(user.getUserId());
         }
 
-
+        return attendanceRepository.findByUserIdIn(pastoralUsers);
+//        return attendanceRepository.findByUserIdInAndServiceDate(pastoralUsers, serviceDate);
     }
 }

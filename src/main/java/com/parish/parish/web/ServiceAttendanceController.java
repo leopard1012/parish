@@ -1,11 +1,14 @@
 package com.parish.parish.web;
 
+import com.parish.parish.domain.ServiceAttendance;
 import com.parish.parish.service.ServiceAttendanceService;
 import com.parish.parish.web.dto.ServiceAttendancePerPastoral;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,7 +26,7 @@ public class ServiceAttendanceController {
     }
 
     @GetMapping(value = "/attendance/{pastoralCode}")
-    public List<ServiceAttendancePerPastoral> getServiceAttendancePerPastoral(@PathVariable Long pastoralCode) {
-
+    public List<ServiceAttendance> getServiceAttendancePerPastoral(@PathVariable Long pastoralCode) {
+        return attendanceService.getServiceAttendancePerPastoral(pastoralCode);
     }
 }

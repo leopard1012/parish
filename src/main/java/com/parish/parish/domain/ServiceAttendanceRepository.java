@@ -1,5 +1,6 @@
 package com.parish.parish.domain;
 
+import org.apache.tomcat.jni.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +18,8 @@ public interface ServiceAttendanceRepository extends JpaRepository<ServiceAttend
     Optional<ServiceAttendance> findByServiceDateAndServiceTypeAndUserId(LocalDate serviceDate, String serviceType, Long userId);
 
     List<ServiceAttendance> findByUserIdIn(Collection<Long> userIds);
+
+    List<ServiceAttendance> findByUserIdInAndServiceDate(Collection<Long> userIds, LocalDate serviceDate);
 
 //    @Transactional
 //    @Modifying(clearAutomatically = true)
