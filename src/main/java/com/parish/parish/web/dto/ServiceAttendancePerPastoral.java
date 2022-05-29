@@ -14,4 +14,5 @@ public class ServiceAttendancePerPastoral {
     private String pastoralName;
     private LocalDate serviceDate;
     private String attendanceType;
+    private Boolean online;
 }

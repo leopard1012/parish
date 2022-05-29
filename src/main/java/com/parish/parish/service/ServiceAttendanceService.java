@@ -127,7 +127,7 @@ public class ServiceAttendanceService {
         return 1L;
     }
 
-    public List<ServiceAttendance> getServiceAttendancePerPastoral(Long pastoralCode) {
+    public List<ServiceAttendancePerPastoral> getServiceAttendancePerPastoral(Long pastoralCode, String year, String month, String dayOfMonth) {
         List<User> users = userRepository.findByPastoralCode(pastoralCode);
         List<Long> pastoralUsers = new ArrayList<>();
 
@@ -135,7 +135,40 @@ public class ServiceAttendanceService {
             pastoralUsers.add(user.getUserId());
         }
 
-        return attendanceRepository.findByUserIdIn(pastoralUsers);
+//        return attendanceRepository.findByUserIdIn(pastoralUsers);
 //        return attendanceRepository.findByUserIdInAndServiceDate(pastoralUsers, serviceDate);
+        String date = year;
+        if (Integer.parseInt(month) > 0) {
+            date += ("-" + month);
+        }
+        if (Integer.parseInt(dayOfMonth) > 0) {
+            date += ("-" + dayOfMonth);
+        }
+        date += "%";
+        List<ServiceAttendance> attendanceList = attendanceRepository.findByUserIdInAndServiceDateLike(pastoralUsers, date);
+
+        List<ServiceAttendancePerPastoral> params = new ArrayList<>();
+
+        for (ServiceAttendance serviceAttendance : attendanceList) {
+            params.add(convEntityToParam(serviceAttendance));
+        }
+
+        return params;
+    }
+
+    private ServiceAttendancePerPastoral convEntityToParam(ServiceAttendance serviceAttendance) {
+        ServiceAttendancePerPastoral param = new ServiceAttendancePerPastoral();
+        User user = userRepository.findById(serviceAttendance.getUserId()).orElse(null);
+        User pastoralUser = userRepository.findById(user.getPastoralCode()).orElse(null);
+
+        if (user != null && pastoralUser != null) {
+            param.setServiceDate(serviceAttendance.getServiceDate());
+            param.setAttendanceType(serviceAttendance.getServiceType());
+            param.setOnline(serviceAttendance.getIsOnline());
+            param.setUserName(user.getUserName() + user.getUserNameSeparator());
+            param.setPastoralName(pastoralUser.getUserName() + pastoralUser.getUserNameSeparator());
+        }
+
+        return param;
     }
 }

@@ -25,8 +25,13 @@ public class ServiceAttendanceController {
         return attendanceService.updateServiceAttendanceForSurveyForm(resultMap);
     }
 
-    @GetMapping(value = "/attendance/{pastoralCode}")
-    public List<ServiceAttendance> getServiceAttendancePerPastoral(@PathVariable Long pastoralCode) {
-        return attendanceService.getServiceAttendancePerPastoral(pastoralCode);
+    @GetMapping(value = "/attendance/{pastoralCode}/date/{year}/{month}/{dayOfMonth}")
+    public List<ServiceAttendancePerPastoral> getServiceAttendancePerPastoral(
+            @PathVariable Long pastoralCode,
+            @PathVariable String year,
+            @PathVariable String month,
+            @PathVariable String dayOfMonth
+    ) {
+        return attendanceService.getServiceAttendancePerPastoral(pastoralCode, year, month, dayOfMonth);
     }
 }

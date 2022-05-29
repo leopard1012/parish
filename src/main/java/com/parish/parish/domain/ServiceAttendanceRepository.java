@@ -21,6 +21,10 @@ public interface ServiceAttendanceRepository extends JpaRepository<ServiceAttend
 
     List<ServiceAttendance> findByUserIdInAndServiceDate(Collection<Long> userIds, LocalDate serviceDate);
 
+    @Query(value = "select * from service_attendance where user_id in (:userIds) and service_date like :date",
+            nativeQuery = true)
+    List<ServiceAttendance> findByUserIdInAndServiceDateLike(List<Long> userIds, String date);
+
 //    @Transactional
 //    @Modifying(clearAutomatically = true)
 //    @Query(value = "update service_attendance set user_id = :userId where pastoral_code = :pastoralCode",
