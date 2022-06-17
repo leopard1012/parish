@@ -1,5 +1,6 @@
 package com.parish.parish.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,4 +29,9 @@ public class ServiceAttendance {
 
     @Column
     private Boolean isOnline;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", referencedColumnName = "userId", insertable = false, updatable = false)
+    private User user;
 }

@@ -3,7 +3,9 @@ package com.parish.parish.web;
 import com.parish.parish.domain.ServiceAttendance;
 import com.parish.parish.service.ServiceAttendanceService;
 import com.parish.parish.web.dto.ServiceAttendancePerPastoral;
+import com.parish.parish.web.dto.ServiceAttendanceResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -33,5 +35,14 @@ public class ServiceAttendanceController {
             @PathVariable String dayOfMonth
     ) {
         return attendanceService.getServiceAttendancePerPastoral(pastoralCode, year, month, dayOfMonth);
+    }
+
+    @GetMapping(value = "/attendance/{pastoralCode}/period/{startDate}/{endDate}")
+    public ServiceAttendanceResponse getAttendacneGraph(
+            @PathVariable Long pastoralCode,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable LocalDate startDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable LocalDate endDate
+    ) {
+        return attendanceService.getAttendacneGraph(pastoralCode, startDate, endDate);
     }
 }

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ServiceAttendancePerPastoral {
     private String userName;
+    private String userNameSeparator;
     private String pastoralName;
     private LocalDate serviceDate;
     private String attendanceType;

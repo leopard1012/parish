@@ -1,17 +1,15 @@
 package com.parish.parish.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.parish.parish.domain.ServiceAttendance;
-import com.parish.parish.domain.ServiceAttendanceRepository;
-import com.parish.parish.domain.User;
-import com.parish.parish.domain.UserRepository;
+import com.parish.parish.domain.*;
 import com.parish.parish.web.dto.ServiceAttendancePerPastoral;
+import com.parish.parish.web.dto.ServiceAttendanceResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -22,6 +20,8 @@ import java.util.*;
 public class ServiceAttendanceService {
     private final UserRepository userRepository;
     private final ServiceAttendanceRepository attendanceRepository;
+    private final PastoralLeaderRepository pastoralLeaderRepository;
+    private final ServiceAttendanceRepoSupport attendanceRepoSupport;
 
     @Transactional
     public Long updateServiceAttendanceForSurveyForm(HashMap<String, Object> resultMap) {
@@ -158,17 +158,60 @@ public class ServiceAttendanceService {
 
     private ServiceAttendancePerPastoral convEntityToParam(ServiceAttendance serviceAttendance) {
         ServiceAttendancePerPastoral param = new ServiceAttendancePerPastoral();
-        User user = userRepository.findById(serviceAttendance.getUserId()).orElse(null);
-        User pastoralUser = userRepository.findById(user.getPastoralCode()).orElse(null);
+        PastoralLeader pastoralLeader = pastoralLeaderRepository.findByUserId(serviceAttendance.getUser().getPastoralCode()).orElse(null);
 
-        if (user != null && pastoralUser != null) {
-            param.setServiceDate(serviceAttendance.getServiceDate());
-            param.setAttendanceType(serviceAttendance.getServiceType());
-            param.setOnline(serviceAttendance.getIsOnline());
-            param.setUserName(user.getUserName() + user.getUserNameSeparator());
-            param.setPastoralName(pastoralUser.getUserName() + pastoralUser.getUserNameSeparator());
+        param.setServiceDate(serviceAttendance.getServiceDate());
+        param.setAttendanceType(serviceAttendance.getServiceType());
+        param.setOnline(serviceAttendance.getIsOnline());
+        param.setUserName(serviceAttendance.getUser().getUserName() + serviceAttendance.getUser().getUserNameSeparator());
+        if (pastoralLeader != null) {
+            param.setPastoralName(pastoralLeader.getUserName() + pastoralLeader.getUserNameSeparator());
         }
 
         return param;
+    }
+
+    public ServiceAttendanceResponse getAttendacneGraph(long pastoralCode, LocalDate startDate, LocalDate endDate) {
+        LocalDate checkDate = startDate;
+        ServiceAttendanceResponse response = new ServiceAttendanceResponse();
+
+        ArrayList<LocalDate> dateCols = new ArrayList<>();
+        while(checkDate.isBefore(endDate)) {
+            if (checkDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                dateCols.add(checkDate);
+            }
+            checkDate = checkDate.plusDays(1);
+        }
+
+        response.setCols(dateCols);
+
+        List<User> pastoralUsers = userRepository.findByPastoralCode(pastoralCode);
+        List<String> pastoralUserList = new ArrayList<>();
+        Map<String,List<LocalDate>> onMap = new HashMap<>();
+        Map<String,List<LocalDate>> offMap = new HashMap<>();
+        for (User pastoralUser : pastoralUsers) {
+            String userName = pastoralUser.getUserName() + pastoralUser.getUserNameSeparator();
+            pastoralUserList.add(userName);
+            offMap.put(userName,new ArrayList<>());
+            onMap.put(userName,new ArrayList<>());
+        }
+        Collections.sort(pastoralUserList);
+        response.setPastoralUserList(pastoralUserList);
+
+        List<ServiceAttendancePerPastoral> attendanceList = attendanceRepoSupport.getAttendance(pastoralCode, response.getCols());
+
+        for (ServiceAttendancePerPastoral attendance : attendanceList) {
+            String userName = attendance.getUserName() + attendance.getUserNameSeparator();
+            if (attendance.getOnline()) {
+                onMap.get(userName).add(attendance.getServiceDate());
+            } else {
+                offMap.get(userName).add(attendance.getServiceDate());
+            }
+        }
+
+        response.setOffLineMap(offMap);
+        response.setOnLineMap(onMap);
+
+        return response;
     }
 }

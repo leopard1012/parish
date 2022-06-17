@@ -1,5 +1,6 @@
 package com.parish.parish.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -46,4 +47,10 @@ public class User {
     @Column(columnDefinition = "boolean default false")
     @Builder.Default
     private Boolean deleteYn = false;
+
+    @Column
+    private String email;
+
+    @Column
+    private Boolean administrator;
 }
